@@ -46,3 +46,7 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+#Api anahtarı
+env.json
+lib/core/network/api_keys.dart
