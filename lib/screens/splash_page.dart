@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_tmdb/core/widgets/brand_logo.dart';
-import '../main.dart'; 
+import 'home_screen.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});

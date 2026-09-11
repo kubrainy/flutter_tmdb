@@ -10,6 +10,7 @@ class MediaItem {
   final double voteAverage;
   final MediaType type;
   final String? backdropPath;
+  final String? releaseDate;
 
   const MediaItem({
     required this.id,
@@ -19,6 +20,7 @@ class MediaItem {
     required this.voteAverage,
     required this.type,
     required this.backdropPath,
+    required this.releaseDate,
   });
 
   factory MediaItem.fromJson(Map<String, dynamic> json, MediaType type) {
@@ -29,6 +31,7 @@ class MediaItem {
       posterPath: json['poster_path'] as String?,
       backdropPath: json['backdrop_path'] as String?,
       voteAverage: (json['vote_average'] as num?)?.toDouble() ?? 0,
+      releaseDate: (json['release_date'] ?? json['first_air_date'] as String),
       type: type,
     );
   }
