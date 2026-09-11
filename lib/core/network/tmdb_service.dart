@@ -17,6 +17,19 @@ class TmdbService {
 
   final Dio _dio;
 
+  Future<List<MediaItem>> getTrendingAll({String timeWindow = 'week'}) async {
+    final response = await _dio.get('/trending/all/$timeWindow');
+    final results = response.data['results'] as List<dynamic>;
+    return results 
+        .where((json) => json['media_type'] != 'person')
+        .map((json) {
+          final map =json as Map<String, dynamic>;
+          final type = map['media_type'] == 'tv' ? MediaType.tv : MediaType.movie;
+          return MediaItem.fromJson(map, type);
+        })
+        .toList();
+  }
+
   Future<List<MediaItem>> discoverMovies({Map<String, dynamic>? extra}) async {
     final response = await _dio.get(
       '/discover/movie',

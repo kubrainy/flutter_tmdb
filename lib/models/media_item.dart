@@ -9,6 +9,7 @@ class MediaItem {
   final String? posterPath;
   final double voteAverage;
   final MediaType type;
+  final String? backdropPath;
 
   const MediaItem({
     required this.id,
@@ -17,6 +18,7 @@ class MediaItem {
     required this.posterPath,
     required this.voteAverage,
     required this.type,
+    required this.backdropPath,
   });
 
   factory MediaItem.fromJson(Map<String, dynamic> json, MediaType type) {
@@ -25,6 +27,7 @@ class MediaItem {
       title: (json['title'] ?? json['name'] ?? '') as String,
       overview: (json['overview'] ?? '') as String,
       posterPath: json['poster_path'] as String?,
+      backdropPath: json['backdrop_path'] as String?,
       voteAverage: (json['vote_average'] as num?)?.toDouble() ?? 0,
       type: type,
     );
@@ -32,4 +35,7 @@ class MediaItem {
 
   String? get posterUrl =>
       posterPath == null ? null : '${ApiConfig.imageBaseUrl}$posterPath';
+
+  String? get backdropUrl =>
+      backdropPath == null ? null : '${ApiConfig.backdropBaseUrl}$backdropPath';   
 }
