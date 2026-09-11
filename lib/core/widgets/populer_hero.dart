@@ -90,7 +90,7 @@ class _PopularHeroState extends State<PopulerHero> {
                                   style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.white,
+                                    color: Colors.white70,
                                   ),
                                 ),
                               )
@@ -108,16 +108,18 @@ class _PopularHeroState extends State<PopulerHero> {
               children: List.generate(visibleCount, (i){
                 final index = dotsStart + i;
                 final active = index == _currentPage;
-                return AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  margin: const EdgeInsets.symmetric(horizontal: 3),
-                  width: active ? 18 : 6,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: active ? Colors.white : Colors.white38,
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                );
+                final colorScheme = Theme.of(context).colorScheme;
+return AnimatedContainer(
+  duration: const Duration(milliseconds: 200),
+  margin: const EdgeInsets.symmetric(horizontal: 3),
+  width: active ? 18 : 6,
+  height: 6,
+  decoration: BoxDecoration(
+    color: active ? colorScheme.onSurface : colorScheme.primary,
+    borderRadius: BorderRadius.circular(3),
+  ),
+);
+
               }),
             )
           ],

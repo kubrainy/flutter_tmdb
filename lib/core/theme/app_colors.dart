@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Uygulama renk paleti. Renkleri buradan çek.
+/// Uygulama renk paleti. 
 class AppColors {
   AppColors._();
 
