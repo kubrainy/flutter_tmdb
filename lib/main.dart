@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tmdb/screens/splash_page.dart';
 import 'core/network/tmdb_service.dart';
 import 'core/widgets/brand_logo.dart';
-import 'core/widgets/media_section.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/app_colors.dart';
 import 'models/media_item.dart';
+import 'core/widgets/populer_hero.dart';
 
 
 void main() {
@@ -33,7 +33,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -44,15 +43,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final TmdbService _service = TmdbService();
 
-  // "Birazdan gelecek liste" sözleri. initState'te bir kez başlatılır.
-  late Future<List<MediaItem>> _moviesFuture;
-  late Future<List<MediaItem>> _tvFuture;
+  late Future<List<MediaItem>> _trendingFuture;
 
   @override
   void initState() {
     super.initState();
-    _moviesFuture = _service.discoverMovies();
-    _tvFuture = _service.discoverTvShows();
+    _trendingFuture = _service.getTrendingAll();
   }
 
   @override
@@ -77,8 +73,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: ListView(
         children: [
-          MediaSection(title: 'Popüler Filmler', future: _moviesFuture),
-          MediaSection(title: 'Popüler Diziler', future: _tvFuture),
+          PopulerHero(future: _trendingFuture),
         ],
       ),
     );
