@@ -15,7 +15,9 @@ class MyApp extends StatelessWidget {
       title: 'TMDB',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.dark,
+      scrollBehavior: const ScrollBehavior().copyWith(scrollbars: false),
       home: const SplashPage(),
     );
   }
 }
+        

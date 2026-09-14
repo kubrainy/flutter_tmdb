@@ -31,7 +31,7 @@ class PosterCard extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            item.title,
+            item.title ?? item.name ?? '',
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),

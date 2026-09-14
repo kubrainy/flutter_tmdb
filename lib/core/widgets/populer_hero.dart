@@ -50,10 +50,15 @@ class _PopularHeroState extends State<PopulerHero> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Bu Hafta Popüler',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                  const Flexible(
+                    child: Text(
+                      'Bu Hafta Popüler',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                    ),
                   ),
+                  const SizedBox(width: 8),
                   Row(
                     children: [
                       _filterChip('Film', active: true),
@@ -99,7 +104,7 @@ class _PopularHeroState extends State<PopulerHero> {
                             right: 12,
                             bottom: 10,
                             child: Text(
-                              items[i].title,
+                              items[i].title ?? items[i].name ?? '',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(

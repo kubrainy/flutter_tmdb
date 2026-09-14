@@ -4,7 +4,8 @@ enum MediaType { movie, tv }
 
 class MediaItem {
   final int id;
-  final String title;
+  final String? title;
+  final String? name;
   final String overview;
   final String? posterPath;
   final double voteAverage;
@@ -15,6 +16,7 @@ class MediaItem {
   const MediaItem({
     required this.id,
     required this.title,
+    required this.name,
     required this.overview,
     required this.posterPath,
     required this.voteAverage,
@@ -26,7 +28,8 @@ class MediaItem {
   factory MediaItem.fromJson(Map<String, dynamic> json, MediaType type) {
     return MediaItem(
       id: json['id'] as int,
-      title: (json['title'] ?? json['name'] ?? '') as String,
+      title: json['title'] as String?,
+      name: json['name'] as String?,
       overview: (json['overview'] ?? '') as String,
       posterPath: json['poster_path'] as String?,
       backdropPath: json['backdrop_path'] as String?,
