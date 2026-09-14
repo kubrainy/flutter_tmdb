@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/media_item.dart';
+import '../theme/app_colors.dart';
 
 class PopulerHero extends StatefulWidget {
   const PopulerHero({super.key, required this.future});
@@ -35,8 +36,6 @@ class _PopularHeroState extends State<PopulerHero> {
             .toList();
         if (items.isEmpty) return const SizedBox.shrink();
 
-        final colorScheme = Theme.of(context).colorScheme;
-
         const maxDots = 5;
         final total = items.length;
         final visibleCount = total < maxDots ? total : maxDots;
@@ -46,11 +45,23 @@ class _PopularHeroState extends State<PopulerHero> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.fromLTRB(16, 20, 16, 12),
-              child: Text(
-                'Bu Hafta Popüler',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Bu Hafta Popüler',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                  ),
+                  Row(
+                    children: [
+                      _filterChip('Film', active: true),
+                      const SizedBox(width: 8),
+                      _filterChip('Dizi'),
+                    ],
+                  ),
+                ],
               ),
             ),
             SizedBox(
@@ -117,7 +128,7 @@ class _PopularHeroState extends State<PopulerHero> {
                   width: active ? 18 : 6,
                   height: 6,
                   decoration: BoxDecoration(
-                    color: active ? colorScheme.onSurface : colorScheme.primary,
+                    color: active ? AppColors.textPrimary : AppColors.primary,
                     borderRadius: BorderRadius.circular(3),
                   ),
                 );
@@ -126,6 +137,24 @@ class _PopularHeroState extends State<PopulerHero> {
           ],
         );
       },
+    );
+  }
+
+  Widget _filterChip(String label, {bool active = false}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+      decoration: BoxDecoration(
+        color: active ? AppColors.primary : Colors.white.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: active ? Colors.white : AppColors.textMuted,
+        ),
+      ),
     );
   }
 }

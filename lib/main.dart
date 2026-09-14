@@ -11,18 +11,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ThemeMode>(
-      valueListenable: AppTheme.mode,
-      builder: (context, mode, _) {
-        return MaterialApp(
-          title: 'TMDB',
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          themeMode: mode,
-          home: const SplashPage(),
-        );
-      },
+    return MaterialApp(
+      title: 'TMDB',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.dark,
+      home: const SplashPage(),
     );
   }
 }
