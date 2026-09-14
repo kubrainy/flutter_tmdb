@@ -1,3 +1,4 @@
+
 import 'package:dio/dio.dart';
 import 'api_config.dart';
 import '../../models/media_item.dart';
@@ -51,6 +52,7 @@ class TmdbService {
       '/discover/tv',
       queryParameters: {
         'sort_by': 'popularity.desc',
+        'include_adult': false,
         ...?extra,
       },
     );
@@ -58,6 +60,22 @@ class TmdbService {
     return results
         .map((json) =>
             MediaItem.fromJson(json as Map<String, dynamic>, MediaType.tv))
+        .toList();
+  }
+
+  Future<List<MediaItem>> searchMulti(String query) async {
+    final response = await _dio.get(
+      '/search/multi',
+      queryParameters: {'query': query , 'include_adult': false},
+    );
+    final results = response.data['results'] as List<dynamic>;
+    return results
+        .where((json) => json['media_type'] != 'person')
+        .map((json){
+          final map = json as Map<String, dynamic>;
+          final type = map['media_type'] == 'tv' ? MediaType.tv : MediaType.movie;
+          return MediaItem.fromJson(map, type);
+        })
         .toList();
   }
 }

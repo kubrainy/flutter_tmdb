@@ -1,91 +1,82 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../../models/media_item.dart';
 import '../network/tmdb_service.dart';
 
-class MovieTvCard extends StatelessWidget {
+class MovieTvCard extends StatefulWidget {
   const MovieTvCard({super.key, required this.item});
 
   final MediaItem item;
 
   @override
+  State<MovieTvCard> createState() => _MovieTvCardState();
+}
+
+class _MovieTvCardState extends State<MovieTvCard> {
+  bool _hovering = false;
+
+  @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Container(
-      width: 335,
-      height: 200,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(26),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.35),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(26),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
-          child: Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(26),
-              gradient: RadialGradient(
-                center: const Alignment(-0.9, -0.9),
-                radius: 1.3,
-                colors: [
-                  Colors.white.withValues(alpha: 0.26),
-                  Colors.white.withValues(alpha: 0.03),
-                ],
-              ),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.4),
-                width: 1.4,
-              ),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovering = true),
+      onExit: (_) => setState(() => _hovering = false),
+      child: AnimatedScale(
+        scale: _hovering ? 1.2 : 1.0,
+        alignment: Alignment.bottomCenter,
+        duration: const Duration(milliseconds: 150),
+        curve: Curves.easeOut,
+        child: SizedBox(
+          width: 130,
+          height: 190,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(14),
+            child: Stack(
+              fit: StackFit.expand,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: item.posterUrl != null
-                      ? Image.network(
-                          item.posterUrl!,
-                          width: 128,
-                          height: 172,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => Container(
-                            width: 128,
-                            height: 172,
-                            color: colorScheme.surfaceContainerHighest,
-                            child: Icon(Icons.movie_outlined,
-                                color: colorScheme.onSurfaceVariant),
-                          ),
-                        )
-                      : Container(
-                          width: 128,
-                          height: 172,
+                widget.item.posterUrl != null
+                    ? Image.network(
+                        widget.item.posterUrl!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
                           color: colorScheme.surfaceContainerHighest,
                           child: Icon(Icons.movie_outlined,
                               color: colorScheme.onSurfaceVariant),
                         ),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Text(
-                      item.title,
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                        color: colorScheme.onSurface,
+                      )
+                    : Container(
+                        color: colorScheme.surfaceContainerHighest,
+                        child: Icon(Icons.movie_outlined,
+                            color: colorScheme.onSurfaceVariant),
                       ),
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [
+                        Colors.black.withValues(alpha: _hovering ? 0.75 : 0.55),
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: 8,
+                  right: 8,
+                  bottom: 8,
+                  child: AnimatedDefaultTextStyle(
+                    duration: const Duration(milliseconds: 150),
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: _hovering ? Colors.white : Colors.white70,
+                    ),
+                    child: Text(
+                      widget.item.title ?? widget.item.name ?? '',
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ),
@@ -136,26 +127,29 @@ class _MovieTvSectionState extends State<MovieTvSection> {
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
           ),
         ),
-        SizedBox(
-          height: 200,
-          child: FutureBuilder<List<MediaItem>>(
-            future: _future,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              final items = snapshot.data ?? [];
-              if (items.isEmpty) return const SizedBox.shrink();
+        FutureBuilder<List<MediaItem>>(
+          future: _future,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            final items = snapshot.data ?? [];
+            if (items.isEmpty) return const SizedBox.shrink();
 
-              return ListView.separated(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: items.length,
-                separatorBuilder: (_, _) => const SizedBox(width: 12),
-                itemBuilder: (context, i) => MovieTvCard(item: items[i]),
-              );
-            },
-          ),
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              clipBehavior: Clip.none,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  for (int i = 0; i < items.length; i++) ...[
+                    if (i > 0) const SizedBox(width: 12),
+                    MovieTvCard(item: items[i]),
+                  ],
+                ],
+              ),
+            );
+          },
         ),
       ],
     );
