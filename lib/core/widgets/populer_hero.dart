@@ -146,7 +146,11 @@ class _PopularHeroState extends State<PopulerHero> {
   }
 
   Widget _filterChip(String label, {bool active = false}) {
-    return Container(
+    return GestureDetector(
+      onTap: () {
+        //bağlanıcak
+      },
+      child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
       decoration: BoxDecoration(
         color: active ? AppColors.primary : Colors.white.withValues(alpha: 0.08),
@@ -160,6 +164,7 @@ class _PopularHeroState extends State<PopulerHero> {
           color: active ? Colors.white : AppColors.textMuted,
         ),
       ),
+    ),
     );
   }
 }
