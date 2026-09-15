@@ -14,17 +14,32 @@ class MainNavScreen extends StatefulWidget {
 
 class _MainNavScreenState extends State<MainNavScreen> {
   int _selectedIndex = 0;
+final Set<int> _loadedTabs = {0};
 
-  late final List<Widget> _tabs = [
-    HomePage(onNavigateToTab: _goToTab),
-    const MediaListScreen(title: 'Filmler', mediaType: MediaType.movie),
-    const MediaListScreen(title: 'Diziler', mediaType: MediaType.tv),
-    const ProfileScreen(),
-  ];
+void _goToTab(int index) {
+  setState(() {
+    _selectedIndex = index;
+    _loadedTabs.add(index);
+  });
+}
 
-  void _goToTab(int index) {
-    setState(() => _selectedIndex = index);
+Widget _buildTab(int index) {
+  if (!_loadedTabs.contains(index)) {
+    return const SizedBox.shrink();
   }
+  switch (index) {
+    case 0:
+      return HomePage(onNavigateToTab: _goToTab);
+    case 1:
+      return const MediaListScreen(title: 'Filmler', mediaType: MediaType.movie);
+    case 2:
+      return const MediaListScreen(title: 'Diziler', mediaType: MediaType.tv);
+    case 3:
+      return const ProfileScreen();
+    default:
+      return const SizedBox.shrink();
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +47,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
       extendBody: true,
       body: IndexedStack(
         index: _selectedIndex,
-        children: _tabs,
+        children: List.generate(4, _buildTab),
       ),
       bottomNavigationBar: SizedBox(
         height: 78,
@@ -74,22 +89,22 @@ class _MainNavScreenState extends State<MainNavScreen> {
                         _navItem(
                           icon: Icons.home_rounded,
                           selected: _selectedIndex == 0,
-                          onPressed: () => setState(() => _selectedIndex = 0),
+                          onPressed: () => _goToTab(0),
                         ),
                         _navItem(
                           icon: Icons.movie_outlined,
                           selected: _selectedIndex == 1,
-                          onPressed: () => setState(() => _selectedIndex = 1),
+                          onPressed: () => _goToTab(1),
                         ),
                         _navItem(
                           icon: Icons.live_tv,
                           selected: _selectedIndex == 2,
-                          onPressed: () => setState(() => _selectedIndex = 2),
+                          onPressed: () => _goToTab(2),
                         ),
                         _navItem(
                           icon: Icons.person_outline,
                           selected: _selectedIndex == 3,
-                          onPressed: () => setState(() => _selectedIndex = 3),
+                          onPressed: () => _goToTab(3),
                         ),
                       ],
                     ),

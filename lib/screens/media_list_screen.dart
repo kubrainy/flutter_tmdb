@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../core/network/tmdb_service.dart';
 import '../core/theme/app_colors.dart';
+import '../core/widgets/brand_logo.dart';
 import '../models/media_item.dart';
 
 class MediaListScreen extends StatefulWidget {
@@ -15,49 +16,98 @@ class MediaListScreen extends StatefulWidget {
 
 class _MediaListScreenState extends State<MediaListScreen> {
   final TmdbService _service = TmdbService();
-  late Future<List<MediaItem>> _future;
+  final ScrollController _scrollController = ScrollController();
+
+  final List<MediaItem> _items = [];
+  int _page = 1;
+  bool _isLoading = false;
+  bool _hasMore = true;
 
   @override
   void initState() {
     super.initState();
-    _future = widget.mediaType == MediaType.movie
-        ? _service.discoverMovies()
-        : _service.discoverTvShows();
+    _loadMore();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final nearBottom = _scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200;
+    if (nearBottom) {
+      _loadMore();
+    }
+  }
+
+  Future<void> _loadMore() async {
+    if (_isLoading || !_hasMore) return;
+    setState(() => _isLoading = true);
+
+    final newItems = widget.mediaType == MediaType.movie
+        ? await _service.discoverMovies(extra: {'page': _page})
+        : await _service.discoverTvShows(extra: {'page': _page});
+
+    if (!mounted) return;
+    setState(() {
+      _items.addAll(newItems);
+      _page++;
+      _isLoading = false;
+      if (newItems.isEmpty) _hasMore = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
-      body: FutureBuilder<List<MediaItem>>(
-        future: _future,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final items = snapshot.data ?? [];
-          if (items.isEmpty) {
-            return const Center(
-              child: Text('Sonuç bulunamadı', style: TextStyle(color: AppColors.textMuted)),
-            );
-          }
-          return GridView.builder(
-            padding: const EdgeInsets.all(16),
-            clipBehavior: Clip.none,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 16,
-              childAspectRatio: 2 / 3,
+      appBar: AppBar(
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              widget.title,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
             ),
-            itemCount: items.length,
-            itemBuilder: (context, i) => _MediaListCard(item: items[i]),
-          );
-        },
+            const SizedBox(width: 10),
+            const BrandLogo(fontSize: 14, showText: false),
+          ],
+        ),
       ),
+      body: _items.isEmpty && _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : GridView.builder(
+              controller: _scrollController,
+              padding: const EdgeInsets.all(16),
+              clipBehavior: Clip.none,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 16,
+                childAspectRatio: 2 / 3,
+              ),
+              itemCount: _items.length + (_hasMore ? 1 : 0),
+              itemBuilder: (context, i) {
+                if (i >= _items.length) {
+                  return const Center(
+                    child: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  );
+                }
+                return _MediaListCard(item: _items[i]);
+              },
+            ),
     );
   }
 }
+
 
 class _MediaListCard extends StatefulWidget {
   const _MediaListCard({required this.item});
