@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../core/network/tmdb_service.dart';
 import '../core/theme/app_colors.dart';
 import '../models/media_item.dart';
+import 'media_detail_screen.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -126,7 +127,13 @@ class _SearchResultCardState extends State<_SearchResultCard> {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => MediaDetailScreen(item: widget.item)),
+        );
+      },
+      child: MouseRegion(
       onEnter: (_) => setState(() => _hovering = true),
       onExit: (_) => setState(() => _hovering = false),
       child: AnimatedScale(
@@ -180,6 +187,7 @@ class _SearchResultCardState extends State<_SearchResultCard> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

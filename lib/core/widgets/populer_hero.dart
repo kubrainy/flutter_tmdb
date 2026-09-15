@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../models/media_item.dart';
+import '../../screens/media_detail_screen.dart';
 import '../theme/app_colors.dart';
 
 class PopulerHero extends StatefulWidget {
-  const PopulerHero({super.key, required this.future});
+  const PopulerHero({super.key, required this.future, this.onNavigateToTab});
   final Future<List<MediaItem>> future;
+  final ValueChanged<int>? onNavigateToTab;
 
   @override
   State<PopulerHero> createState() => _PopularHeroState();
@@ -61,9 +63,9 @@ class _PopularHeroState extends State<PopulerHero> {
                   const SizedBox(width: 8),
                   Row(
                     children: [
-                      _filterChip('Film', active: true),
+                      _filterChip('Film', active: true, onTap: () => widget.onNavigateToTab?.call(1)),
                       const SizedBox(width: 8),
-                      _filterChip('Dizi'),
+                      _filterChip('Dizi', onTap: () => widget.onNavigateToTab?.call(2)),
                     ],
                   ),
                 ],
@@ -79,7 +81,9 @@ class _PopularHeroState extends State<PopulerHero> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: GestureDetector(
                     onTap: () {
-                      //ileride bağlanıcak detay sayfası
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => MediaDetailScreen(item: items[i])),
+                      );
                     },
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(14),
@@ -145,11 +149,9 @@ class _PopularHeroState extends State<PopulerHero> {
     );
   }
 
-  Widget _filterChip(String label, {bool active = false}) {
+  Widget _filterChip(String label, {bool active = false, VoidCallback? onTap}) {
     return GestureDetector(
-      onTap: () {
-        //bağlanıcak
-      },
+      onTap: onTap,
       child: Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
       decoration: BoxDecoration(

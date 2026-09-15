@@ -12,6 +12,7 @@ class MediaItem {
   final MediaType type;
   final String? backdropPath;
   final String? releaseDate;
+  final List<int> genreIds;
 
   const MediaItem({
     required this.id,
@@ -23,6 +24,7 @@ class MediaItem {
     required this.type,
     required this.backdropPath,
     required this.releaseDate,
+    required this.genreIds,
   });
 
   factory MediaItem.fromJson(Map<String, dynamic> json, MediaType type) {
@@ -35,6 +37,10 @@ class MediaItem {
       backdropPath: json['backdrop_path'] as String?,
       voteAverage: (json['vote_average'] as num?)?.toDouble() ?? 0,
       releaseDate: (json['release_date'] ?? json['first_air_date'] as String),
+      genreIds: (json['genre_ids'] as List<dynamic>?)
+              ?.map((e) => e as int)
+              .toList() ??
+          const [],
       type: type,
     );
   }

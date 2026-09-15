@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/media_item.dart';
+import '../../screens/media_detail_screen.dart';
 import '../network/tmdb_service.dart';
 
 class MovieTvCard extends StatefulWidget {
@@ -20,7 +21,9 @@ class _MovieTvCardState extends State<MovieTvCard> {
 
     return GestureDetector(
       onTap: (){
-        // bağlanıcak
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => MediaDetailScreen(item: widget.item)),
+        );
       },
       child: MouseRegion(
       onEnter: (_) => setState(() => _hovering = true),
