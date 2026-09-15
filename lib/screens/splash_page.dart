@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_tmdb/core/widgets/brand_logo.dart';
-import 'home_screen.dart';
+import 'main_nav_screen.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -17,7 +17,7 @@ class _SplashPageState extends State<SplashPage> {
     Timer(const Duration(seconds: 2), () {
       if (!mounted) return; 
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const HomePage()),
+        MaterialPageRoute(builder: (_) => const MainNavScreen()),
       );
     });
   }

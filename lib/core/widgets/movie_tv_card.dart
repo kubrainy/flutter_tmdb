@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/media_item.dart';
 import '../network/tmdb_service.dart';
-import '../../screens/movie_tv_detail.dart';
 
 class MovieTvCard extends StatefulWidget {
   const MovieTvCard({super.key, required this.item});
@@ -100,14 +99,17 @@ class MovieTvSection extends StatefulWidget {
     super.key,
     required this.title,
     required this.mediaType,
+    this.onSeeAll,
   });
 
   final String title;
   final MediaType mediaType;
+  final VoidCallback? onSeeAll;
 
   @override
   State<MovieTvSection> createState() => _MovieTvSectionState();
 }
+
 
 class _MovieTvSectionState extends State<MovieTvSection> {
   final TmdbService _service = TmdbService();
@@ -127,11 +129,7 @@ class _MovieTvSectionState extends State<MovieTvSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         GestureDetector(
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const MovieTvDetail()),
-            );
-          },
+          onTap: widget.onSeeAll,
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
             child: Text(
