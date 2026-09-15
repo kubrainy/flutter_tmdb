@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: ListView(
         children: [
-          PopulerHero(future: _trendingFuture),
+          PopulerHero(future: _trendingFuture, onNavigateToTab: widget.onNavigateToTab),
           MovieTvSection(
             title: 'Filmler',
             mediaType: MediaType.movie,
