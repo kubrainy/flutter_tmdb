@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../core/widgets/brand_logo.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -6,7 +7,19 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      appBar: AppBar(title: const Text('Profil')),
+      appBar: AppBar(
+        title: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Profil',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+            ),
+            SizedBox(width: 10),
+            BrandLogo(fontSize: 14, showText: false),
+          ],
+        ),
+      ),
       body: const Center(
         child: Text('Profil Sayfası'),
       ),

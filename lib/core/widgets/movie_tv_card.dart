@@ -157,6 +157,20 @@ class _MovieTvSectionState extends State<MovieTvSection> {
                     if (i > 0) const SizedBox(width: 12),
                     MovieTvCard(item: items[i]),
                   ],
+                  const SizedBox(width: 12),
+                  GestureDetector(
+                    onTap: widget.onSeeAll,
+                    child: Container(
+                      width: 50,
+                      height: 190,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.06),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: const Icon(Icons.chevron_right, color: Colors.purpleAccent, size: 28),
+                    ),
+                  )
                 ],
               ),
             );
