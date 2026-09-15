@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/media_item.dart';
 import '../network/tmdb_service.dart';
+import '../../screens/movie_tv_detail.dart';
 
 class MovieTvCard extends StatefulWidget {
   const MovieTvCard({super.key, required this.item});
@@ -18,7 +19,11 @@ class _MovieTvCardState extends State<MovieTvCard> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return MouseRegion(
+    return GestureDetector(
+      onTap: (){
+        // bağlanıcak
+      },
+      child: MouseRegion(
       onEnter: (_) => setState(() => _hovering = true),
       onExit: (_) => setState(() => _hovering = false),
       child: AnimatedScale(
@@ -85,6 +90,7 @@ class _MovieTvCardState extends State<MovieTvCard> {
           ),
         ),
       ),
+    ),
     );
   }
 }
@@ -120,11 +126,18 @@ class _MovieTvSectionState extends State<MovieTvSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
-          child: Text(
+        GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const MovieTvDetail()),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
+            child: Text(
             widget.title,
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+          )
           ),
         ),
         FutureBuilder<List<MediaItem>>(
