@@ -4,6 +4,7 @@ import '../models/media_item.dart';
 import 'home_screen.dart';
 import 'media_list_screen.dart';
 import 'profile_screen.dart';
+import 'search_screen.dart';
 
 class MainNavScreen extends StatefulWidget {
   const MainNavScreen({super.key});
@@ -49,70 +50,79 @@ Widget _buildTab(int index) {
         index: _selectedIndex,
         children: List.generate(4, _buildTab),
       ),
-      bottomNavigationBar: SizedBox(
-        height: 78,
-        child: Stack(
-          clipBehavior: Clip.none,
-          alignment: Alignment.center,
-          children: [
-            Positioned(
-              bottom: -30,
-              child: Container(
-                width: 220,
-                height: 120,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: RadialGradient(
-                    colors: [
-                      Colors.pinkAccent.withValues(alpha: 0.55),
-                      Colors.purpleAccent.withValues(alpha: 0.0),
-                    ],
-                  ),
-                ),
-              ),
+      floatingActionButton: Container(
+        width: 76,
+        height: 76,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [AppColors.secondary, AppColors.accentPink],
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.secondary.withValues(alpha: 0.5),
+              blurRadius: 12,
+              spreadRadius: 1,
+              offset: const Offset(0, 4),
             ),
-            SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(25),
-                  child: Container(
-                    height: 54,
-                    decoration: const BoxDecoration(
-                      gradient: AppColors.brandGradient,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        _navItem(
-                          icon: Icons.home_rounded,
-                          selected: _selectedIndex == 0,
-                          onPressed: () => _goToTab(0),
-                        ),
-                        _navItem(
-                          icon: Icons.movie_outlined,
-                          selected: _selectedIndex == 1,
-                          onPressed: () => _goToTab(1),
-                        ),
-                        _navItem(
-                          icon: Icons.live_tv,
-                          selected: _selectedIndex == 2,
-                          onPressed: () => _goToTab(2),
-                        ),
-                        _navItem(
-                          icon: Icons.person_outline,
-                          selected: _selectedIndex == 3,
-                          onPressed: () => _goToTab(3),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+            BoxShadow(
+              color: Colors.white.withValues(alpha: 0.4),
+              blurRadius: 20,
+              spreadRadius: 2,
             ),
           ],
+        ),
+        child: Center(
+          child: IconButton(
+            icon: const Icon(Icons.search, color: Colors.white, size: 28),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const SearchScreen()),
+              );
+            },
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 12,
+        color: Colors.transparent,
+        elevation: 0,
+        height: 56,
+        padding: EdgeInsets.zero,
+        clipBehavior: Clip.antiAlias,
+        child: Container(
+          decoration: const BoxDecoration(gradient: AppColors.brandGradient),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _navItem(
+                icon: Icons.home_rounded,
+                selected: _selectedIndex == 0,
+                onPressed: () => _goToTab(0),
+              ),
+              _navItem(
+                icon: Icons.local_movies_rounded,
+                selected: _selectedIndex == 1,
+                onPressed: () => _goToTab(1),
+              ),
+              const SizedBox(width: 56),
+              _navItem(
+                icon: Icons.tv_rounded,
+                selected: _selectedIndex == 2,
+                onPressed: () => _goToTab(2),
+              ),
+              _navItem(
+                icon: Icons.person_rounded,
+                selected: _selectedIndex == 3,
+                onPressed: () => _goToTab(3),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -128,21 +138,10 @@ Widget _buildTab(int index) {
       constraints: const BoxConstraints(),
       alignment: Alignment.center,
       onPressed: onPressed,
-      icon: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: Colors.white, size: 20),
-          const SizedBox(height: 4),
-          Container(
-            width: 5,
-            height: 5,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: selected ? Colors.white : Colors.transparent,
-            ),
-          ),
-        ],
+      icon: Icon(
+        icon,
+        color: selected ? Colors.white : Colors.white.withValues(alpha: 0.6),
+        size: selected ? 20 : 17,
       ),
     );
   }

@@ -50,6 +50,10 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
     final releaseDate = (detail?['release_date'] as String?) ??
         (detail?['first_air_date'] as String?) ??
         item.releaseDate;
+    final genres = (detail?['genres'] as List<dynamic>?)
+            ?.map((g) => (g as Map<String, dynamic>)['name'] as String)
+            .toList() ??
+        const <String>[];
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -135,12 +139,19 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
                           ],
                         ),
                       ],
+                      if (genres.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        Text(
+                          'Tür: ${genres.join(', ')}',
+                          style: TextStyle(color: AppColors.textMuted, fontSize: 13),
+                        ),
+                      ],
                     ],
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 135),
+            const SizedBox(height: 170),
             _loading
                 ? const Padding(
                     padding: EdgeInsets.symmetric(vertical: 40),

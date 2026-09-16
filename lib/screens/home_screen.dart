@@ -4,7 +4,6 @@ import '../core/widgets/brand_logo.dart';
 import '../core/widgets/movie_tv_card.dart';
 import '../core/widgets/populer_hero.dart';
 import '../models/media_item.dart';
-import 'search_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, this.onNavigateToTab});
@@ -31,16 +30,6 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const BrandLogo(),
         scrolledUnderElevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const SearchScreen()),
-              );
-            },
-          )
-        ],
       ),
       body: ListView(
         children: [

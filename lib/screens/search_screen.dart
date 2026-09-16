@@ -61,20 +61,41 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        title: TextField(
-          controller: _controller,
-          autofocus: true,
-          onChanged: _onQueryChanged,
-          style: const TextStyle(color: AppColors.textPrimary),
-          cursorColor: AppColors.primary,
-          decoration: InputDecoration(
-            hintText: 'Film veya dizi ara...',
-            hintStyle: const TextStyle(color: AppColors.textMuted),
-            border: InputBorder.none,
+        iconTheme: const IconThemeData(color: AppColors.textMuted),
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(child: _buildBody()),
+            _buildSearchField(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchField() {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+      child: TextField(
+        controller: _controller,
+        autofocus: true,
+        onChanged: _onQueryChanged,
+        style: const TextStyle(color: AppColors.textPrimary),
+        cursorColor: AppColors.textMuted,
+        decoration: InputDecoration(
+          hintText: 'Film veya dizi ara...',
+          hintStyle: const TextStyle(color: AppColors.textMuted),
+          suffixIcon: const Icon(Icons.search, color: AppColors.textMuted),
+          filled: true,
+          fillColor: AppColors.surface,
+          contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(24),
+            borderSide: BorderSide.none,
           ),
         ),
       ),
-      body: _buildBody(),
     );
   }
 
@@ -100,7 +121,7 @@ class _SearchScreenState extends State<SearchScreen> {
     }
     return GridView.builder(
       padding: const EdgeInsets.all(16),
-      clipBehavior: Clip.none,
+      clipBehavior: Clip.hardEdge,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         crossAxisSpacing: 12,
