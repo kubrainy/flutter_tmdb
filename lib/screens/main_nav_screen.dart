@@ -51,8 +51,8 @@ Widget _buildTab(int index) {
         children: List.generate(4, _buildTab),
       ),
       floatingActionButton: Container(
-        width: 76,
-        height: 76,
+        width: 64,
+        height: 64,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: const LinearGradient(
@@ -68,7 +68,7 @@ Widget _buildTab(int index) {
               offset: const Offset(0, 4),
             ),
             BoxShadow(
-              color: Colors.white.withValues(alpha: 0.4),
+              color: AppColors.accentPink.withValues(alpha: 0.5),
               blurRadius: 20,
               spreadRadius: 2,
             ),
@@ -76,7 +76,7 @@ Widget _buildTab(int index) {
         ),
         child: Center(
           child: IconButton(
-            icon: const Icon(Icons.search, color: Colors.white, size: 28),
+            icon: const Icon(Icons.search, color: Colors.white, size: 22),
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const SearchScreen()),
@@ -106,7 +106,7 @@ Widget _buildTab(int index) {
                 onPressed: () => _goToTab(0),
               ),
               _navItem(
-                icon: Icons.local_movies_rounded,
+                icon: Icons.movie_creation_rounded,
                 selected: _selectedIndex == 1,
                 onPressed: () => _goToTab(1),
               ),

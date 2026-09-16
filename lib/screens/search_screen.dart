@@ -60,9 +60,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: const IconThemeData(color: AppColors.textMuted),
-      ),
+      appBar: AppBar(),
       body: SafeArea(
         child: Column(
           children: [
