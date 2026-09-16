@@ -6,10 +6,16 @@ import '../models/media_item.dart';
 import 'media_detail_screen.dart';
 
 class MediaListScreen extends StatefulWidget {
-  const MediaListScreen({super.key, required this.title, required this.mediaType});
+  const MediaListScreen({
+    super.key,
+    required this.title,
+    required this.mediaType,
+    this.genreId,
+  });
 
   final String title;
   final MediaType mediaType;
+  final int? genreId;
 
   @override
   State<MediaListScreen> createState() => _MediaListScreenState();
@@ -50,9 +56,13 @@ class _MediaListScreenState extends State<MediaListScreen> {
     if (_isLoading || !_hasMore) return;
     setState(() => _isLoading = true);
 
+    final extra = <String, dynamic>{
+      'page': _page,
+      if (widget.genreId != null) 'with_genres': widget.genreId,
+    };
     final newItems = widget.mediaType == MediaType.movie
-        ? await _service.discoverMovies(extra: {'page': _page})
-        : await _service.discoverTvShows(extra: {'page': _page});
+        ? await _service.discoverMovies(extra: extra)
+        : await _service.discoverTvShows(extra: extra);
 
     if (!mounted) return;
     setState(() {
@@ -70,9 +80,13 @@ class _MediaListScreenState extends State<MediaListScreen> {
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              widget.title,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+            Flexible(
+              child: Text(
+                widget.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+              ),
             ),
             const SizedBox(width: 10),
             const BrandLogo(fontSize: 14, showText: false),

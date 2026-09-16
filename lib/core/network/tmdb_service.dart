@@ -107,4 +107,58 @@ class TmdbService {
     return response.data as Map<String, dynamic>;
   }
 
+  Future<List<Map<String, dynamic>>> getCredits(int id, MediaType type) async {
+    final path = type == MediaType.tv ? '/tv/$id/credits' : '/movie/$id/credits';
+    final response = await _dio.get(path);
+    final cast = response.data['cast'] as List<dynamic>;
+    return cast.cast<Map<String , dynamic>>();
+  }
+
+  Future<Map<String, dynamic>> getPersonDetail(int personId) async {
+    final response = await _dio.get('/person/$personId');
+    return response.data as Map<String, dynamic>;
+  }
+
+  Future<List<MediaItem>> getPersonCredits(int personId) async {
+    final response = await _dio.get('/person/$personId/combined_credits');
+    final cast = response.data['cast'] as List<dynamic>;
+    return cast
+        .where((json) =>
+            json['media_type'] == 'movie' || json['media_type'] == 'tv')
+        .map((json) {
+          final map = json as Map<String, dynamic>;
+          final type = map['media_type'] == 'tv' ? MediaType.tv : MediaType.movie;
+          return MediaItem.fromJson(map, type);
+        })
+        .toList();
+  }
+
+  Future<List<Map<String, dynamic>>> getReviews(int id, MediaType type) async {
+    final path = type == MediaType.tv ? '/tv/$id/reviews' : '/movie/$id/reviews';
+    final response = await _dio.get(
+      path,
+      queryParameters: {'language': 'en-US'},
+    );
+    final results = response.data['results'] as List<dynamic>;
+    return results.cast<Map<String, dynamic>>();
+  }
+
+  Future<List<Map<String, dynamic>>> getVideos(int id, MediaType type) async {
+    final path = type == MediaType.tv ? '/tv/$id/videos' : '/movie/$id/videos';
+    final response = await _dio.get(path);
+    final results = response.data['results'] as List<dynamic>;
+    return results
+        .cast<Map<String, dynamic>>()
+        .where((v) => v['site'] == 'YouTube')
+        .toList();
+  }
+
+  Future<List<MediaItem>> getSimilar(int id, MediaType type) async {
+    final path = type == MediaType.tv ? '/tv/$id/similar' : '/movie/$id/similar';
+    final response = await _dio.get(path);
+    final results = response.data['results'] as List<dynamic>;
+    return results
+        .map((json) => MediaItem.fromJson(json as Map<String, dynamic>, type))
+        .toList();
+  }
 }
