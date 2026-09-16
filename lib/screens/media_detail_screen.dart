@@ -28,6 +28,18 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
   bool _loading = true;
   bool _showAllReviews = false;
   final List<TapGestureRecognizer> _genreRecognizers = [];
+  final GlobalKey _reviewsKey = GlobalKey();
+
+  void _scrollToReviews() {
+    final ctx = _reviewsKey.currentContext;
+    if (ctx != null) {
+      Scrollable.ensureVisible(
+        ctx,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
 
   static const _sections = ['Özet', 'Oyuncular', 'Videolar', 'Reviews', 'Similar Movies'];
 
@@ -93,6 +105,7 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
             ?.map((g) => g as Map<String, dynamic>)
             .toList() ??
         const <Map<String, dynamic>>[];
+    final voteAverage = (detail?['vote_average'] as num?)?.toDouble() ?? item.voteAverage;
 
     for (final r in _genreRecognizers) {
       r.dispose();
@@ -132,7 +145,7 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
                   child: BackButton(color: AppColors.textPrimary),
                 ),
                 Positioned(
-                  top: 160,
+                  top: 195,
                   left: 16,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
@@ -196,6 +209,13 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
                           ),
                         ),
                       ],
+                      if (voteAverage > 0) ...[
+                        const SizedBox(height: 8),
+                        GestureDetector(
+                          onTap: _scrollToReviews,
+                          child: _buildStarRating(voteAverage),
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -208,7 +228,7 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
                     child: Center(child: CircularProgressIndicator()),
                   )
                 : Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -226,6 +246,7 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
 
   Widget _buildSection(String title, String overview) {
     return Padding(
+      key: title == 'Reviews' ? _reviewsKey : null,
       padding: const EdgeInsets.only(bottom: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -348,7 +369,7 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
                 ),
               ),
               if (rating != null) ...[
-                const Icon(Icons.star, size: 14, color: AppColors.primary),
+                const Icon(Icons.star, size: 14, color: Colors.amber),
                 const SizedBox(width: 2),
                 Text(
                   '$rating',
@@ -503,6 +524,32 @@ class _MediaDetailScreenState extends State<MediaDetailScreen> {
           child: MediaPosterCard(item: _similar[i]),
         ),
       ),
+    );
+  }
+
+  Widget _buildStarRow(Color color) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(
+        5,
+        (_) => Icon(Icons.star, size: 14, color: color),
+      ),
+    );
+  }
+
+  Widget _buildStarRating(double voteAverage) {
+    final fraction = (voteAverage / 10).clamp(0.0, 1.0);
+    return Stack(
+      children: [
+        _buildStarRow(AppColors.textMuted.withValues(alpha: 0.3)),
+        ClipRect(
+          child: Align(
+            alignment: Alignment.centerLeft,
+            widthFactor: fraction,
+            child: _buildStarRow(Colors.amber),
+          ),
+        ),
+      ],
     );
   }
 }
