@@ -4,6 +4,7 @@ import '../core/network/tmdb_service.dart';
 import '../core/theme/app_colors.dart';
 import '../models/media_item.dart';
 import 'media_detail_screen.dart';
+import 'media_list_screen.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -22,11 +23,41 @@ class _SearchScreenState extends State<SearchScreen> {
   bool _loading = false;
   bool _searched = false;
 
+  Map<int, String> _movieGenres = {};
+  Map<int, String> _tvGenres = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _loadGenres();
+  }
+
+  Future<void> _loadGenres() async {
+    final movieGenres = await _service.getMovieGenreMap();
+    final tvGenres = await _service.getTvGenreMap();
+    if (!mounted) return;
+    setState(() {
+      _movieGenres = movieGenres;
+      _tvGenres = tvGenres;
+    });
+  }
+
   void _onQueryChanged(String query){
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500),(){
        _runSearch(query.trim());
     });
+  }
+
+  String _normalize(String s) =>
+      s.toLowerCase().replaceAll(RegExp(r'[\s\-]'), '');
+
+  MapEntry<int, String>? _matchGenre(Map<int, String> genres, String query) {
+    final normalizedQuery = _normalize(query);
+    for (final entry in genres.entries) {
+      if (_normalize(entry.value) == normalizedQuery) return entry;
+    }
+    return null;
   }
 
   Future<void> _runSearch(String query) async {
@@ -38,6 +69,35 @@ class _SearchScreenState extends State<SearchScreen> {
       });
       return;
     }
+
+    final movieMatch = _matchGenre(_movieGenres, query);
+    if (movieMatch != null) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => MediaListScreen(
+            title: '${movieMatch.value} Filmleri',
+            mediaType: MediaType.movie,
+            genreId: movieMatch.key,
+          ),
+        ),
+      );
+      return;
+    }
+
+    final tvMatch = _matchGenre(_tvGenres, query);
+    if (tvMatch != null) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => MediaListScreen(
+            title: '${tvMatch.value} Dizileri',
+            mediaType: MediaType.tv,
+            genreId: tvMatch.key,
+          ),
+        ),
+      );
+      return;
+    }
+
     setState(() {
       _loading = true;
       _searched = true;

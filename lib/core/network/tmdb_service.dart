@@ -79,25 +79,28 @@ class TmdbService {
         .toList();
   }
 
-  static Map<int, String>? _genreCache;
+  static Map<int, String>? _movieGenreCache;
+  static Map<int, String>? _tvGenreCache;
 
-  Future<Map<int, String>> getGenreMap() async {
-    if (_genreCache != null) return _genreCache!;
+  Future<Map<int, String>> getMovieGenreMap() async {
+    if (_movieGenreCache != null) return _movieGenreCache!;
+    final response = await _dio.get('/genre/movie/list');
+    final list = response.data['genres'] as List<dynamic>;
+    final genres = <int, String>{
+      for (final g in list) (g as Map<String, dynamic>)['id'] as int: g['name'] as String,
+    };
+    _movieGenreCache = genres;
+    return genres;
+  }
 
-    final responses = await Future.wait([
-      _dio.get('/genre/movie/list'),
-      _dio.get('/genre/tv/list'),
-    ]);
-
-    final genres = <int, String>{};
-    for (final response in responses) {
-      final list = response.data['genres'] as List<dynamic>;
-      for (final g in list) {
-        final map = g as Map<String, dynamic>;
-        genres[map['id'] as int] = map['name'] as String;
-      }
-    }
-    _genreCache = genres;
+  Future<Map<int, String>> getTvGenreMap() async {
+    if (_tvGenreCache != null) return _tvGenreCache!;
+    final response = await _dio.get('/genre/tv/list');
+    final list = response.data['genres'] as List<dynamic>;
+    final genres = <int, String>{
+      for (final g in list) (g as Map<String, dynamic>)['id'] as int: g['name'] as String,
+    };
+    _tvGenreCache = genres;
     return genres;
   }
 
