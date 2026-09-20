@@ -25,6 +25,8 @@ class _MovieTvCardState extends State<MovieTvCard> {
           MaterialPageRoute(builder: (_) => MediaDetailScreen(item: widget.item)),
         );
       },
+
+      
       child: MouseRegion(
       onEnter: (_) => setState(() => _hovering = true),
       onExit: (_) => setState(() => _hovering = false),
